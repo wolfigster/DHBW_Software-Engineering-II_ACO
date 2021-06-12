@@ -95,7 +95,8 @@ public class Ant {
 
             for (int j = 0; j < notJetVisited.size(); j++) {
                 int position = notJetVisited.elementAt(j);
-                sum += antColony.getPheromone(tour[i - 1], position) / data.getDistance(tour[i - 1], position);
+                //sum += antColony.getPheromone(tour[i - 1], position) / data.getDistance(tour[i - 1], position);
+                sum += getProbability(i, position);
             }
 
             double selectionProbability = 0.0;
@@ -109,7 +110,8 @@ public class Ant {
             for (int j = 0; j < notJetVisited.size(); j++) {
                 int position = notJetVisited.elementAt(j);
 
-                selectionProbability += antColony.getPheromone(tour[i - 1], position) / data.getDistance(tour[i - 1], position) / sum;
+                //selectionProbability += antColony.getPheromone(tour[i - 1], position) / data.getDistance(tour[i - 1], position) / sum;
+                selectionProbability += getProbability(i, position) / sum;
 
                 if (Configuration.instance.isDebug) {
                     if (position < 10) {
@@ -143,6 +145,10 @@ public class Ant {
         if (Configuration.instance.isDebug) {
             LogEngine.instance.write("---");
         }
+    }
+
+    public double getProbability(int i, int position) {
+        return Math.pow(antColony.getPheromone(tour[i - 1], position), Configuration.instance.alpha) * Math.pow(1 / data.getDistance(tour[i - 1], position), Configuration.instance.beta);
     }
 
     public String toString() {
