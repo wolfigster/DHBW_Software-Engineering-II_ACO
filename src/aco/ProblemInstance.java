@@ -1,3 +1,5 @@
+package aco;
+
 public enum ProblemInstance {
     instance;
 

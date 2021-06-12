@@ -1,10 +1,15 @@
+package aco;
+
+import configuration.Configuration;
+import log.LogEngine;
+
 public class AntColony {
     private final double[][] pheromones;
     private final Ant[] ants;
 
     public AntColony() {
         if (Configuration.instance.isDebug) {
-            LogEngine.instance.write("--- AntColony()");
+            LogEngine.instance.write("--- aco.AntColony()");
         }
 
         int count = ProblemInstance.instance.getNumberOfCities();
@@ -49,7 +54,7 @@ public class AntColony {
 
     public void doDecay() {
         if (Configuration.instance.isDebug) {
-            LogEngine.instance.write("--- AntColony.doDecay()");
+            LogEngine.instance.write("--- aco.AntColony.doDecay()");
         }
 
         int count = ProblemInstance.instance.getNumberOfCities();
@@ -110,7 +115,7 @@ public class AntColony {
     }
 
     public void printPheromoneMatrix() {
-        LogEngine.instance.write("--- AntColony.printPheromoneMatrix()");
+        LogEngine.instance.write("--- aco.AntColony.printPheromoneMatrix()");
 
         int n = pheromones.length;
         for (double[] pheromone : pheromones) {

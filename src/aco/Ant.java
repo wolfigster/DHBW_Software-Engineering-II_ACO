@@ -1,3 +1,8 @@
+package aco;
+
+import configuration.Configuration;
+import log.LogEngine;
+
 import java.text.DecimalFormat;
 import java.util.Vector;
 
@@ -44,7 +49,7 @@ public class Ant {
         int count = data.getNumberOfCities();
 
         if (Configuration.instance.isDebug) {
-            LogEngine.instance.write("--- Ant[" + id + "].layPheromone()");
+            LogEngine.instance.write("--- aco.Ant[" + id + "].layPheromone()");
             LogEngine.instance.write("decay factor   : " + Configuration.instance.decayFactor);
             LogEngine.instance.write("objectiveValue : " + objectiveValue);
             LogEngine.instance.write("pheromone      : " + pheromone);
@@ -67,7 +72,7 @@ public class Ant {
         DecimalFormat decimalFormat = new DecimalFormat("#0.000000000000000");
 
         if (Configuration.instance.isDebug) {
-            LogEngine.instance.write("--- Ant[" + id + "].lookForWay");
+            LogEngine.instance.write("--- aco.Ant[" + id + "].lookForWay");
         }
 
         int numberOfCities = data.getNumberOfCities();
