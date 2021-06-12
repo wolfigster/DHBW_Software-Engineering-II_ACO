@@ -34,7 +34,9 @@ public enum LogEngine {
             if (Configuration.instance.isDebug) {
                 System.out.println(text);
             }
-            bufferedWriter.write(getCurrentDate() + " : " + text + "\n");
+            if (Configuration.instance.loglevel) {
+                bufferedWriter.write(getCurrentDate() + " : " + text + "\n");
+            }
         } catch (IOException ioe) {
             System.out.println(ioe.getMessage());
         }
