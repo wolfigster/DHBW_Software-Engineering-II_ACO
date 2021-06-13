@@ -12,6 +12,7 @@ public enum Configuration {
     public final String fileSeparator = System.getProperty("file.separator");
     public final String dataDirectory = userDirectory + fileSeparator + "data" + fileSeparator;
     public final String logDirectory = userDirectory + fileSeparator + "log" + fileSeparator;
+    public final String logFile = logDirectory + "swarm_intelligence.log";
 
     public final MersenneTwister randomGenerator = new MersenneTwister(System.currentTimeMillis());
     public final DecimalFormat decimalFormat = new DecimalFormat("#0.000000000000000");
@@ -28,7 +29,7 @@ public enum Configuration {
     public int numberOfIterations = 50;
     public int numberOfThreads = 4;
     public String data = "pr299.tsp";
-    public String result = "swam_intelligence.log";
+    public String result = "result.log";
 
     // method to set all necessary variables
     public void set(String... args) throws Exception {
@@ -44,45 +45,45 @@ public enum Configuration {
         }
         // try to get all the inputs from the hashmap and parse them to the correct datatype
         try {
-            this.data = dataDirectory + values.get("data");
-            this.result = logDirectory + values.get("result");
-            double _alpha = Double.parseDouble(values.get("alpha"));
+            this.data = values.get("data") == null ? this.data : dataDirectory + values.get("data");
+            this.result = values.get("result") == null ? this.result : logDirectory + values.get("result");
+            double _alpha = values.get("alpha") == null ? this.alpha : Double.parseDouble(values.get("alpha"));
             if (_alpha > 10 || _alpha < 1) {
                 throw new Exception("-alpha has to be between 0 and 10");
             }
             this.alpha = _alpha;
 
-            double _beta = Double.parseDouble(values.get("beta"));
+            double _beta = values.get("beta") == null ? this.beta : Double.parseDouble(values.get("beta"));
             if (_beta > 10 || _beta < 1) {
                 throw new Exception("-beta has to be between 0 and 10");
             }
             this.beta = _beta;
 
-            double _decayFactor = Double.parseDouble(values.get("decay"));
+            double _decayFactor = values.get("decay") == null ? this.decayFactor : Double.parseDouble(values.get("decay"));
             if (!(0 <= _decayFactor && _decayFactor <= 1)) {
                 throw new Exception("-decay has to be between 0 and 1");
             }
             this.decayFactor = _decayFactor;
 
-            int _numberOfIterations = Integer.parseInt(values.get("niterations"));
+            int _numberOfIterations = values.get("niterations") == null ? this.numberOfIterations : Integer.parseInt(values.get("niterations"));
             if (_numberOfIterations < 1) {
                 throw new Exception("-niterations has to be greater than 0");
             }
             this.numberOfIterations = _numberOfIterations;
 
-            int _numberOfAnts = Integer.parseInt(values.get("nants"));
+            int _numberOfAnts = values.get("nants") == null ? this.numberOfAnts : Integer.parseInt(values.get("nants"));
             if (_numberOfAnts < 1) {
                 throw new Exception("-nants has to be greater than 0");
             }
             this.numberOfAnts = _numberOfAnts;
 
-            int _numberOfThreads = Integer.parseInt(values.get("nthreads"));
+            int _numberOfThreads = values.get("nthreads") == null ? this.numberOfThreads : Integer.parseInt(values.get("nthreads"));
             if (_numberOfThreads < 1) {
                 throw new Exception("-nthreads has to be greater than 0");
             }
             this.numberOfThreads = _numberOfThreads;
 
-            int _loglevel = Integer.parseInt(values.get("loglevel")) ;
+            int _loglevel = values.get("loglevel") == null ? 0 : Integer.parseInt(values.get("loglevel"));
             if (!(_loglevel == 1 || _loglevel == 0)) {
                 throw new Exception("-loglevel has to be 0 or 1");
             }
