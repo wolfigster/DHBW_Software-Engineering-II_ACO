@@ -3,11 +3,18 @@ package aco;
 import configuration.Configuration;
 import log.LogEngine;
 
+import java.util.ArrayList;
+import java.util.concurrent.CyclicBarrier;
+
 public class AntColony {
     private final double[][] pheromones;
     private final Ant[] ants;
+    private final Worker[] workers;
+    private final CyclicBarrier cyclicBarrier;
 
     public AntColony() {
+        cyclicBarrier = new CyclicBarrier(Configuration.instance.numberOfThreads);
+
         if (Configuration.instance.isDebug) {
             LogEngine.instance.write("--- aco.AntColony()");
         }
@@ -30,8 +37,30 @@ public class AntColony {
         if (Configuration.instance.isDebug) {
             LogEngine.instance.write("---");
         }
+
+
+        // init workers
+        // split the numberOfAnts to each worker
+        workers = new Worker[Configuration.instance.numberOfThreads];
+        int size = Configuration.instance.numberOfAnts / Configuration.instance.numberOfThreads + 1;
+        for (int i = 0; i < Configuration.instance.numberOfThreads; i++) {
+            ArrayList<Ant> antList = new ArrayList<>();
+
+            // calculate starting- & ending-index
+            int start = i * size;
+            int end = (i + 1) * size;
+
+            // assign specific ants to the antlist
+            for (int index = start; index < end; index++) {
+                if (index < Configuration.instance.numberOfAnts) antList.add(ants[index]);
+            }
+
+            // create new Worker with specific antlist
+            workers[i] = new Worker(cyclicBarrier, antList);
+        }
     }
 
+    /*
     public static void main(java.lang.String[] args) {
         System.out.println("logfilePath : " + Configuration.instance.logfilePath);
         LogEngine.instance.init("debug.log");
@@ -43,6 +72,7 @@ public class AntColony {
 
         LogEngine.instance.close();
     }
+     */
 
     public void addPheromone(int from, int to, double pheromoneValue) {
         pheromones[from - 1][to - 1] += pheromoneValue;
@@ -69,7 +99,8 @@ public class AntColony {
         }
     }
 
-    private Ant getBestAnt() {
+    // made getBestAnt public to access it from the Application class to log the result
+    public Ant getBestAnt() {
         int indexOfAntWithBestObjectiveValue = 0;
         double objectiveValue = Double.MAX_VALUE;
 
@@ -84,33 +115,59 @@ public class AntColony {
         return ants[indexOfAntWithBestObjectiveValue];
     }
 
-    public void solve() {
+    public void solve() throws InterruptedException {
         int iteration = 0;
 
         while (iteration < Configuration.instance.numberOfIterations) {
-            LogEngine.instance.write("*** iteration - " + iteration);
+            // start time for iteration
+            long startTime = System.nanoTime();
+            iteration++;
 
             if (Configuration.instance.isDebug) {
                 printPheromoneMatrix();
             }
 
-            iteration++;
+            // create multiple threads for each worker
+            Thread thread = new Thread();
+            for(int i = 0; i < Configuration.instance.numberOfThreads; i++) {
+                thread = new Thread(workers[i]);
+                thread.start();
+            }
 
+            // wait for thread to die
+            thread.join();
+
+            /*
             for (int i = 0; i < Configuration.instance.numberOfAnts; i++) {
                 ants[i].newRound();
                 ants[i].lookForWay();
             }
 
             System.out.println("iteration [" + iteration + "] | " + getBestAnt());
+             */
 
             doDecay();
-            getBestAnt().layPheromone();
+            // declare best ant to access it for the logging at the end of this method
+            Ant best = getBestAnt();
+            best.layPheromone();
 
             if (Configuration.instance.isDebug) {
                 printPheromoneMatrix();
             }
 
-            LogEngine.instance.write("***");
+            // get end time - everything below is logging and no actual work
+            long runtime = System.nanoTime() - startTime;
+            runtime = runtime / 1000000;
+
+            // [timestamp dd.MM.yyyy HH:mm:ss] | [i] | [runtime of iteration in ms] | [best agent id] | [best distance] | [best tour]
+            String iterationMessage = String.format("iteration: %4s", iteration);
+            String runtimeMessage = String.format("runtime of iteration: %5sms", runtime);
+            String bestAgentMessage = String.format("best agent id: %4s", best.getId());
+            String bestDistanceMessage = "best distance: " + best.getDistance();
+            String bestTourMessage = best.getTour();
+
+            String message = iterationMessage + " | " + runtimeMessage + " | " + bestAgentMessage + " | " + bestDistanceMessage + " | " + bestTourMessage;
+            LogEngine.instance.write(message);
         }
     }
 
