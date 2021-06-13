@@ -22,10 +22,10 @@ public enum LogEngine {
         }
     }
 
-    public String getCurrentDate() {
+    private String getCurrentDate() {
         Date date = new Date();
         // SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.S");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
         return simpleDateFormat.format(date);
     }
 
@@ -35,8 +35,17 @@ public enum LogEngine {
                 System.out.println(text);
             }
             if (Configuration.instance.loglevel) {
-                bufferedWriter.write(getCurrentDate() + " : " + text + "\n");
+                bufferedWriter.write(getCurrentDate() + " | " + text + "\n");
             }
+        } catch (IOException ioe) {
+            System.out.println(ioe.getMessage());
+        }
+    }
+
+    // add method to write without loglevel equal 1, to write the result
+    public void writeResult(String text) {
+        try {
+            bufferedWriter.write(getCurrentDate() + " | " + text + "\n");
         } catch (IOException ioe) {
             System.out.println(ioe.getMessage());
         }
