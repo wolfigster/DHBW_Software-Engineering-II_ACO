@@ -83,7 +83,6 @@ public enum Configuration {
             this.numberOfThreads = _numberOfThreads;
 
             int _loglevel = Integer.parseInt(values.get("loglevel")) ;
-            System.out.println(_loglevel);
             if (!(_loglevel == 1 || _loglevel == 0)) {
                 throw new Exception("-loglevel has to be 0 or 1");
             }
