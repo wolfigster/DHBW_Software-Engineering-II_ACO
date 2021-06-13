@@ -28,8 +28,8 @@ public enum Configuration {
     public int numberOfAnts = 25;
     public int numberOfIterations = 50;
     public int numberOfThreads = 4;
-    public String data = "pr299.tsp";
-    public String result = "result.log";
+    public String data = dataDirectory + "pr299.tsp";
+    public String result = logDirectory + "result.log";
 
     // method to set all necessary variables
     public void set(String... args) throws Exception {
@@ -48,13 +48,13 @@ public enum Configuration {
             this.data = values.get("data") == null ? this.data : dataDirectory + values.get("data");
             this.result = values.get("result") == null ? this.result : logDirectory + values.get("result");
             double _alpha = values.get("alpha") == null ? this.alpha : Double.parseDouble(values.get("alpha"));
-            if (_alpha > 10 || _alpha < 1) {
+            if (!(0 <= _alpha && _alpha <= 10)) {
                 throw new Exception("-alpha has to be between 0 and 10");
             }
             this.alpha = _alpha;
 
             double _beta = values.get("beta") == null ? this.beta : Double.parseDouble(values.get("beta"));
-            if (_beta > 10 || _beta < 1) {
+            if (!(0 <= _beta && _beta <= 10)) {
                 throw new Exception("-beta has to be between 0 and 10");
             }
             this.beta = _beta;
