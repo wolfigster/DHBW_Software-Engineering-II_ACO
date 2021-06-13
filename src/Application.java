@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class Application {
     // bounds for pr299 = 48191
-    // -data pr299.tsp -alpha 5 -beta 5 -decay 0.3 -niterations 256 -nants 256 -nthreads 4 -result result.log -loglevel 1
+    // -data pr299.tsp -alpha 5 -beta 5 -decay 0.3 -niterations 128 -nants 64 -nthreads 4 -result result.log -loglevel 1
     public static void main(String[] args) throws Exception {
         // get arguments and save them to the configuration
         Configuration.instance.set(args);
