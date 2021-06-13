@@ -12,7 +12,6 @@ public enum Configuration {
     public final String fileSeparator = System.getProperty("file.separator");
     public final String dataDirectory = userDirectory + fileSeparator + "data" + fileSeparator;
     public final String logDirectory = userDirectory + fileSeparator + "log" + fileSeparator;
-    public final String logfilePath = logDirectory + "debug.log";
 
     public final MersenneTwister randomGenerator = new MersenneTwister(System.currentTimeMillis());
     public final DecimalFormat decimalFormat = new DecimalFormat("#0.000000000000000");
@@ -46,36 +45,51 @@ public enum Configuration {
         // try to get all the inputs from the hashmap and parse them to the correct datatype
         try {
             this.data = dataDirectory + values.get("data");
-            this.alpha = Double.parseDouble(values.get("alpha"));
-            this.beta = Double.parseDouble(values.get("beta"));
-            this.decayFactor = Double.parseDouble(values.get("decay"));
-            this.numberOfIterations = Integer.parseInt(values.get("niterations"));
-            this.numberOfAnts = Integer.parseInt(values.get("nants"));
-            this.numberOfThreads = Integer.parseInt(values.get("nthreads"));
             this.result = logDirectory + values.get("result");
-            this.loglevel = Boolean.parseBoolean(values.get("loglevel"));
+            double _alpha = Double.parseDouble(values.get("alpha"));
+            if (_alpha > 10 || _alpha < 1) {
+                throw new Exception("-alpha has to be between 0 and 10");
+            }
+            this.alpha = _alpha;
+
+            double _beta = Double.parseDouble(values.get("beta"));
+            if (_beta > 10 || _beta < 1) {
+                throw new Exception("-beta has to be between 0 and 10");
+            }
+            this.beta = _beta;
+
+            double _decayFactor = Double.parseDouble(values.get("decay"));
+            if (!(0 <= _decayFactor && _decayFactor <= 1)) {
+                throw new Exception("-decay has to be between 0 and 1");
+            }
+            this.decayFactor = _decayFactor;
+
+            int _numberOfIterations = Integer.parseInt(values.get("niterations"));
+            if (_numberOfIterations < 1) {
+                throw new Exception("-niterations has to be greater than 0");
+            }
+            this.numberOfIterations = _numberOfIterations;
+
+            int _numberOfAnts = Integer.parseInt(values.get("nants"));
+            if (_numberOfAnts < 1) {
+                throw new Exception("-nants has to be greater than 0");
+            }
+            this.numberOfAnts = _numberOfAnts;
+
+            int _numberOfThreads = Integer.parseInt(values.get("nthreads"));
+            if (_numberOfThreads < 1) {
+                throw new Exception("-nthreads has to be greater than 0");
+            }
+            this.numberOfThreads = _numberOfThreads;
+
+            int _loglevel = Integer.parseInt(values.get("loglevel")) ;
+            System.out.println(_loglevel);
+            if (!(_loglevel == 1 || _loglevel == 0)) {
+                throw new Exception("-loglevel has to be 0 or 1");
+            }
+            this.loglevel = _loglevel == 1;
         } catch (NumberFormatException nfe) {
             throw new Exception("Ein oder mehrere Parameter konnten nicht übergeben werden. Überprüfen Sie ihre Eingaben!");
-        }
-        // check plausibility of the input
-        checkPlausibility();
-    }
-
-    private void checkPlausibility() throws Exception {
-        if (alpha > 10 || alpha < 1 || beta > 10 || beta < 1) {
-            throw new Exception("-alpha and -beta have to be between 0 and 10");
-        }
-        if (!(0 <= decayFactor && decayFactor <= 1)) {
-            throw new Exception("-decay has to be between 0 and 1");
-        }
-        if (numberOfIterations < 1) {
-            throw new Exception("-niterations has to be greater than 0");
-        }
-        if (numberOfAnts < 1) {
-            throw new Exception("-nants has to be greater than 0");
-        }
-        if (numberOfThreads < 1) {
-            throw new Exception("-nthreads has to be greater than 0");
         }
     }
 }
