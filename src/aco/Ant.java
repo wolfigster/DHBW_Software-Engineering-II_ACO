@@ -165,4 +165,21 @@ public class Ant {
 
         return stringBuffer.toString();
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getDistance() {
+        return Configuration.instance.decimalFormat.format(objectiveValue);
+    }
+
+    public String getTour() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("best tour:");
+        for(int i : tour) {
+            stringBuilder.append(String.format(" %3s", i));
+        }
+        return stringBuilder.toString();
+    }
 }
