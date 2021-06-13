@@ -15,7 +15,7 @@ public enum LogEngine {
 
     public void init(String fileName) {
         try {
-            FileWriter fileWriter = new FileWriter(Configuration.instance.logDirectory + fileName, true);
+            FileWriter fileWriter = new FileWriter(fileName, true);
             bufferedWriter = new BufferedWriter(fileWriter);
         } catch (IOException ioe) {
             System.out.println(ioe.getMessage());
